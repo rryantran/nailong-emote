@@ -2,22 +2,17 @@ import cv2
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from utils import detect_face
+from utils import detect_face, init_webcam_and_detector
 
 EXPRESSIONS = ["mouth_open", "neutral"]
 IMG_SIZE = (224, 224)
 
 
 def main():
-    # Load Haar Cascade for face detection
-    haar_cascade = cv2.CascadeClassifier(
-        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+    haar_cascade, cap = init_webcam_and_detector()
 
     # Load model
     model = tf.keras.models.load_model("nailong_exp_model.keras")
-
-    # Webcam initialization
-    cap = cv2.VideoCapture(0)
 
     # Data collection loop
     while True:

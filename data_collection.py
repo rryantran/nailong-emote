@@ -1,8 +1,7 @@
 import os
 import cv2
-from utils import setup_directories, detect_face
+from utils import setup_directories, detect_face, init_webcam_and_detector
 
-# Dataset parameters
 EXPRESSIONS = ["mouth_open", "neutral", "smile", "tongue_out"]
 IMG_SIZE = (224, 224)
 NUM_IMAGES = 200
@@ -11,13 +10,7 @@ BASE_DIR = "dataset"
 
 def main():
     setup_directories(EXPRESSIONS, BASE_DIR)
-
-    # Load Haar Cascade for face detection
-    haar_cascade = cv2.CascadeClassifier(
-        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-
-    # Webcam initialization
-    cap = cv2.VideoCapture(0)
+    haar_cascade, cap = init_webcam_and_detector()
 
     # Data collection loop
     for exp in EXPRESSIONS:

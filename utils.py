@@ -28,3 +28,13 @@ def detect_face(frame, haar_cascade, img_size):
         face_img = cv2.resize(face, img_size)
 
     return face_img
+
+
+def init_webcam_and_detector():
+    """Initialize webcam and Haar Cascade detector"""
+    haar_cascade = cv2.CascadeClassifier(
+        cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+    cap = cv2.VideoCapture(0)
+
+    return haar_cascade, cap
