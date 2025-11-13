@@ -1,39 +1,12 @@
 import os
 import cv2
+from utils import setup_directories, detect_face
 
 # Dataset parameters
-EXPRESSIONS = ["neutral", "smile", "tongue_out", "mouth_open"]
+EXPRESSIONS = ["mouth_open", "neutral", "smile", "tongue_out"]
 IMG_SIZE = (224, 224)
 NUM_IMAGES = 200
 BASE_DIR = "dataset"
-
-
-def setup_directories(expressions, base_dir):
-    """Create directories for dataset"""
-
-    os.makedirs(base_dir, exist_ok=True)
-
-    for exp in expressions:
-        os.makedirs(os.path.join(base_dir, exp), exist_ok=True)
-
-
-def detect_face(frame, haar_cascade, img_size):
-    """Detect face and return processed image if detected"""
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
-
-    faces = haar_cascade.detectMultiScale(
-        gray, scaleFactor=1.1, minNeighbors=5, minSize=(100, 100))
-
-    face_img = None  # Default if no face detected
-
-    for (x, y, w, h) in faces:
-        # Draw rectangle around face for visualization
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 0), 2)
-        face = frame[y:y+h, x:x+w]
-        face_img = cv2.resize(face, img_size)
-
-    return face_img
 
 
 def main():
