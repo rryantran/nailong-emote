@@ -1,3 +1,3 @@
 # Nailong Emote
 
-![Nailong Smirking](nailong-readme.jpg)
+![Nailong Smirking](images/readme.jpg)

@@ -14,6 +14,10 @@ def main():
     # Load model
     model = tf.keras.models.load_model("nailong_exp_model.keras")
 
+    # Load images
+    neutral_img = cv2.imread("neutral.jpg")
+    mouth_open_img = cv2.imread("mouth_open.jpg")
+
     # Data collection loop
     while True:
         ret, frame = cap.read()
@@ -30,10 +34,23 @@ def main():
             pred_exp = EXPRESSIONS[np.argmax(preds)]
             pred_text = f"Expression: {pred_exp}"
 
+            # Select image based on prediction
+            if pred_exp == "mouth_open":
+                display_img = mouth_open_img
+            elif pred_exp == "neutral":
+                display_img = neutral_img
+
+            # Resize display image
+            display_img = cv2.resize(display_img, IMG_SIZE)
+
         cv2.putText(frame, pred_text, (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         cv2.imshow("Expression Recognition", frame)
+
+        # Show image based on prediction
+        if display_img is not None:
+            cv2.imshow("Nailong", display_img)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
