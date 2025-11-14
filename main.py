@@ -15,8 +15,8 @@ def main():
     model = tf.keras.models.load_model("nailong_exp_model.keras")
 
     # Load images
-    neutral_img = cv2.imread("neutral.jpg")
-    mouth_open_img = cv2.imread("mouth_open.jpg")
+    neutral_img = cv2.imread("images/neutral.jpg")
+    mouth_open_img = cv2.imread("images/mouth_open.jpg")
 
     # Data collection loop
     while True:
@@ -30,11 +30,11 @@ def main():
         if face is not None:
             face_array = preprocess_input(np.expand_dims(
                 face, axis=0))  # Preprocess, add batch dimension
-            preds = model.predict(face_array)
+            preds = model.predict(face_array, verbose=0)
             pred_exp = EXPRESSIONS[np.argmax(preds)]
             pred_text = f"Expression: {pred_exp}"
 
-            # Select image based on prediction
+            # Select display image based on prediction
             if pred_exp == "mouth_open":
                 display_img = mouth_open_img
             elif pred_exp == "neutral":
@@ -46,12 +46,13 @@ def main():
         cv2.putText(frame, pred_text, (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-        cv2.imshow("Expression Recognition", frame)
+        cv2.imshow("Webcam", frame)
 
-        # Show image based on prediction
+        # Display image
         if display_img is not None:
             cv2.imshow("Nailong", display_img)
 
+        # 'q' (quit)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
