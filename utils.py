@@ -2,17 +2,30 @@ import os
 import cv2
 
 
-def setup_directories(expressions, base_dir):
-    """Create directories for dataset"""
+def setup_directories(categories, base_dir):
+    """
+    Create directories for dataset
+
+    :param categories: List of category names
+    :param base_dir: Base directory path to create category directories in
+    """
 
     os.makedirs(base_dir, exist_ok=True)
 
-    for exp in expressions:
-        os.makedirs(os.path.join(base_dir, exp), exist_ok=True)
+    for category in categories:
+        os.makedirs(os.path.join(base_dir, category), exist_ok=True)
 
 
 def detect_face(frame, haar_cascade, img_size):
-    """Detect face and return processed image if detected"""
+    """
+    Detect face using Haar Cascade and return processed image if detected
+
+    :param frame: Input image frame
+    :param haar_cascade: Pre-loaded Haar Cascade classifier
+    :param img_size: Output image size (width, height)
+
+    :return: Processed image or None if no face detected
+    """
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
 
@@ -31,7 +44,12 @@ def detect_face(frame, haar_cascade, img_size):
 
 
 def init_webcam_and_detector():
-    """Initialize webcam and Haar Cascade detector"""
+    """
+    Initialize webcam and Haar Cascade classifier
+
+    :return: Tuple of (Haar Cascade classifier, VideoCapture object)
+    """
+
     haar_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
