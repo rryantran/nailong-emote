@@ -4,7 +4,7 @@ import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from utils import detect_face, init_webcam_and_detector
 
-EXPRESSIONS = ["mouth_open", "neutral"]
+EXPRESSIONS = ["mouth_open", "neutral", "smile", "tongue_out"]
 IMG_SIZE = (224, 224)
 
 haar_cascade, cap = init_webcam_and_detector()
@@ -12,7 +12,11 @@ model = tf.keras.models.load_model("nailong_exp_model.keras")
 
 neutral_img = cv2.imread("images/neutral.jpg")
 mouth_open_img = cv2.imread("images/mouth_open.jpg")
+smile_img = cv2.imread("images/smile.jpg")
+tongue_out_img = cv2.imread("images/tongue_out.jpg")
 display_img = None
+
+# NOTE: Model is trained on RGB images, but images taken from webcam are BGR (conversion is needed)
 
 while True:
     ret, frame = cap.read()
@@ -23,8 +27,9 @@ while True:
     pred_text = "No face detected"
 
     if face is not None:
+        face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)  # Convert to RGB
         face_array = preprocess_input(np.expand_dims(
-            face, axis=0))  # Preprocess, add batch dim
+            face_rgb.astype(np.float32), axis=0))  # Preprocess, add batch dim
         preds = model.predict(face_array, verbose=0)
         pred_exp = EXPRESSIONS[np.argmax(preds)]
         scores = " | ".join(
@@ -35,14 +40,18 @@ while True:
             display_img = mouth_open_img
         elif pred_exp == "neutral":
             display_img = neutral_img
+        elif pred_exp == "smile":
+            display_img = smile_img
+        elif pred_exp == "tongue_out":
+            display_img = tongue_out_img
 
         # Resize display image for consistency
         display_img = cv2.resize(display_img, IMG_SIZE)
 
     cv2.putText(frame, pred_text, (20, 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 0), 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
-    cv2.imshow("Webcam", frame)
+    cv2.imshow("Facial Expression", frame)
 
     if display_img is not None:
         cv2.imshow("Nailong", display_img)
